@@ -2,7 +2,7 @@ var arr_list_final=[];
 function Listar_Pedido(){
     //sessionStorage.getItem("codMesa")
     var array_OrdenPedido_Fin = JSON.parse(sessionStorage.getItem("arrePedido"));
-    var cont = '';
+    var cont = ''; 
     if(sessionStorage.getItem("arrePedido") != "null" && array_OrdenPedido_Fin.length > 0){
         for(var i =0; i< array_OrdenPedido_Fin.length;i++){
             if(sessionStorage.getItem("codMesa") == array_OrdenPedido_Fin[i]["nMesa"]){
