@@ -16,6 +16,7 @@
   	                  	<tr>
   		                    <th style="text-align: center">Categoria</th>
   		                    <th style="text-align: center">Pedido</th>
+							<th style="text-align: center">Acción</th>
   	                  	</tr>
   	                </thead>
   	                <tbody id="tabListaPri">

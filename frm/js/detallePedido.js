@@ -3,47 +3,74 @@ function Listar_Pedido(){
     //sessionStorage.getItem("codMesa")
     var array_OrdenPedido_Fin = JSON.parse(sessionStorage.getItem("arrePedido"));
     var cont = '';
-    for(var i =0; i< array_OrdenPedido_Fin.length;i++){
-        if(sessionStorage.getItem("codMesa") == array_OrdenPedido_Fin[i]["nMesa"]){
-            //console.log( array_OrdenPedido_Fin[i]["nSubCategoria"]);
-            var array ={"tipoConsulta":"listarParametroEspecifico", "codClase":'4000',"codPar": array_OrdenPedido_Fin[i]["nSubCategoria"]};
-            $.ajax({
-                //async:true,
-                type:"POST",
-                dataType:"html",
-                contentType:"application/x-www-form-urlencoded",
-                url:"BL/BL_parametro.php",
-                data: array,
-                beforeSend: function() {
-                    //console.log("procesara");
-                },
-                success: function (response) {
-                    //console.log(response);
-                    var objGe = JSON.parse(response);
-                    //console.log(objGe);
-                    for (var i in objGe){
-                        //console.log(objGe[i]);
-                        cont +="<tr>";
-                        cont += "<td>"+objGe[i]['nomCategoria']+"</td>";
-                        cont += "<td>"+objGe[i]['nombre']+"</td>";
-                        //cont += "<td> <a class='btn btn-info btn-xs' onclick=\"Enotria_nuevoCliente('"+arrayEnoClientes[i]['cPerCodigo']+"')\" ><span class='glyphicon glyphicon-edit'></span></a> "; 
-                        cont +="</tr>"
-                        $("#tabListaPri").html(cont);
-	                    //$('#tabla_list_cliente').DataTable();
+    if(sessionStorage.getItem("arrePedido") != "null" && array_OrdenPedido_Fin.length > 0){
+        for(var i =0; i< array_OrdenPedido_Fin.length;i++){
+            if(sessionStorage.getItem("codMesa") == array_OrdenPedido_Fin[i]["nMesa"]){
+                //console.log( array_OrdenPedido_Fin[i]["nSubCategoria"]);
+                var array ={"tipoConsulta":"listarParametroEspecifico", "codClase":'4000',"codPar": array_OrdenPedido_Fin[i]["nSubCategoria"]};
+                $.ajax({
+                    //async:true,
+                    type:"POST",
+                    dataType:"html",
+                    contentType:"application/x-www-form-urlencoded",
+                    url:"BL/BL_parametro.php",
+                    data: array,
+                    beforeSend: function() {
+                        //console.log("procesara");
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        var objGe = JSON.parse(response);
+                        //console.log(objGe);
+                        for (var j in objGe){
+                            //console.log(objGe[i]);
+                            cont +="<tr>";
+                            cont += "<td>"+objGe[j]['nomCategoria']+"</td>";
+                            cont += "<td>"+objGe[j]['nombre']+"</td>";
+                            cont += "<td> <a class='btn btn-danger btn-xs' onclick=\"EliminarPedidoUnitario("+sessionStorage.getItem("codMesa")+","+objGe[j]['codParametro']+")\" ><span class='glyphicon glyphicon-remove'></span></a> "; 
+                            cont +="</tr>"
+                            $("#tabListaPri").html(cont);
+                            //$('#tabla_list_cliente').DataTable();
+                        }
+                        
+                        
+                        //arr_list_final.push(JSON.parse(response));
+                        //Imprimir_SubCategorias_View();
+                    },
+                    timeout: 4000,
+                    error: function () {
+                        console.log("error");
                     }
-                    
-                    
-                    //arr_list_final.push(JSON.parse(response));
-                    //Imprimir_SubCategorias_View();
-                },
-                timeout: 4000,
-                error: function () {
-                    console.log("error");
-                }
-            });
+                });
+            }
+        }
+    }else{
+        alert("La mesa seleccionada no cuenta con productos agregados...");
+        menus("gestorMenu");
+    }
+   
+
+}
+
+function EliminarPedidoUnitario(nCodMesa,nCodSubCategoria){
+    var array_OrdenPedido_Fin = JSON.parse(sessionStorage.getItem("arrePedido"));
+    var pos = -1;
+    for(var i =0;i<array_OrdenPedido_Fin.length;i++){
+        if(array_OrdenPedido_Fin[i]["nMesa"] == nCodMesa &&
+        array_OrdenPedido_Fin[i]["nSubCategoria"] == nCodSubCategoria){
+            pos = i;
         }
     }
+    if(pos > -1){
+        array_OrdenPedido_Fin.splice(pos,1);
+        sessionStorage.setItem("arrePedido", JSON.stringify(array_OrdenPedido_Fin));
+        alert("Pedido Eliminado...");
+        menus("gestorMenu");
+    }else{
+        alert("Ocurrio un Error...");
+    }
 
+    
 }
 
 function FinalizarPedido(){
